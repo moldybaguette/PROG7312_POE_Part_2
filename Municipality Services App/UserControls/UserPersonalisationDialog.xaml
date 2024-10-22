@@ -1,0 +1,32 @@
+﻿<Window
+    x:Class="Municipality_Services_App.UserControls.UserPersonalisationDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Municipality_Services_App.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    Title="Personal Info"
+    Width="443"
+    Height="208"
+    ResizeMode="NoResize"
+    mc:Ignorable="d">
+    <StackPanel Margin="10">
+        <TextBlock FontSize="18" Text="Home address:" />
+        <TextBlock Text="This data will be used to display the distance to events around you." />
+
+        <TextBox x:Name="InputTextBox" Margin="0,10,0,10" />
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button
+                Width="75"
+                Margin="5"
+                Click="OkButton_Click"
+                Content="OK" />
+            <Button
+                Width="75"
+                Margin="5"
+                Click="CancelButton_Click"
+                Content="Cancel" />
+        </StackPanel>
+    </StackPanel>
+</Window>

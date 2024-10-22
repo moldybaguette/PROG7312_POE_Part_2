@@ -1,0 +1,245 @@
+﻿<Window
+    x:Class="Municipality_Services_App.LocalEventsWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Converters="clr-namespace:Municipality_Services_App.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Municipality_Services_App"
+    xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    xmlns:usercontrols="clr-namespace:Municipality_Services_App.UserControls"
+    Title="LocalEventsWindow"
+    Width="1150"
+    Height="760"
+    Background="#98FF98"
+    Loaded="Window_Loaded"
+    mc:Ignorable="d">
+
+    <Window.Resources>
+        <Converters:BoolToColumnSpanConverter x:Key="BoolToColumnSpanConverter" />
+        <Converters:BoolToColumnNumberConverter x:Key="BoolToColumnNumberConverter" />
+        <Converters:BoolToRowSpanConverter x:Key="BoolToRowSpanConverter" />
+
+    </Window.Resources>
+
+    <Grid x:Name="MainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.12*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4.5*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border
+            Margin="3,16"
+            Padding="3"
+            CornerRadius="11"
+            Style="{StaticResource FilterSortStyle}">
+            <Grid Grid.Row="0" Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <!--  Button 1 (Back)  -->
+                    <ColumnDefinition Width="Auto" />
+                    <!--  Button 2 (User Settings)  -->
+                    <ColumnDefinition Width="*" />
+                    <!--  AutoSuggestBox takes remaining space  -->
+                </Grid.ColumnDefinitions>
+
+                <Button
+                    x:Name="btnBackToMainMenu"
+                    Grid.Column="0"
+                    MinWidth="40"
+                    MinHeight="20"
+                    MaxWidth="60"
+                    MaxHeight="25"
+                    Margin="5"
+                    VerticalAlignment="Center"
+                    ui:ControlHelper.CornerRadius="9"
+                    Click="ReturnToMainMenu"
+                    Content="{materialIcons:MaterialIconExt Kind=ArrowLeft}" />
+
+                <Button
+                    x:Name="btnUserSettings"
+                    Grid.Column="1"
+                    MinWidth="40"
+                    MinHeight="40"
+                    MaxWidth="60"
+                    MaxHeight="60"
+                    Padding="0"
+                    VerticalAlignment="Center"
+                    Background="Transparent"
+                    Click="btnUserSettings_Click"
+                    Content="{materialIcons:MaterialIconExt Kind=AccountCircleOutline,
+                                                            Size=29}" />
+
+                <ui:AutoSuggestBox
+                    x:Name="TextBoxSearch"
+                    Grid.Column="2"
+                    Margin="4"
+                    Padding="15,8"
+                    VerticalAlignment="Center"
+                    CornerRadius="9"
+                    PlaceholderText="Search For An Event By Title, Date, Or Venue"
+                    PreviewKeyDown="TextBoxSearch_PreviewKeyDown"
+                    TextChanged="TextBoxSearch_TextChanged"
+                    ToolTip="Search for an event or venue" />
+
+            </Grid>
+        </Border>
+
+        <usercontrols:FilterSortControl
+            x:Name="filterSortControl"
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            Margin="3,18,3,12"
+            VerticalAlignment="Top" />
+
+
+
+        <ScrollViewer
+            Grid.Row="1"
+            Grid.ColumnSpan="{Binding ElementName=filterSortControl, Path=IsExpanded, Converter={StaticResource BoolToColumnSpanConverter}}"
+            VerticalScrollBarVisibility="Auto">
+
+            <ItemsControl
+                x:Name="eventItemsControl"
+                Grid.Row="1"
+                ItemsSource="{Binding EventData}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="{Binding ElementName=filterSortControl, Path=IsExpanded, Converter={StaticResource BoolToColumnNumberConverter}}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Margin="5"
+                            BorderThickness="1"
+                            CornerRadius="11"
+                            Style="{StaticResource EventCardStyle}">
+
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Grid.Row="0">
+
+                                    <!--  Event Image  -->
+                                    <Image
+                                        HorizontalAlignment="Center"
+                                        Source="{Binding Image}"
+                                        Stretch="UniformToFill" />
+
+
+                                    <!--  Event Title  -->
+                                    <TextBlock
+                                        x:Name="TitleField"
+                                        Style="{StaticResource EventTitleStyle}"
+                                        Text="{Binding Title}"
+                                        TextAlignment="Center"
+                                        TextWrapping="Wrap" />
+
+                                    <!--  Date  -->
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
+                                            FontWeight="Bold"
+                                            Style="{StaticResource SubHeadingStyle}"
+                                            Text="Date: " />
+                                        <TextBlock
+                                            Style="{StaticResource EventInfoStyle}"
+                                            Text="{Binding DateInfo}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+
+                                    <!--  Time  -->
+                                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                        <TextBlock
+                                            FontWeight="Bold"
+                                            Style="{StaticResource SubHeadingStyle}"
+                                            Text="Time: " />
+                                        <TextBlock
+                                            x:Name="TimeField"
+                                            Style="{StaticResource EventInfoStyle}"
+                                            Text="{Binding TimeInfo}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+
+                                    <!--  Venue  -->
+                                    <StackPanel Margin="0,5,0,0">
+                                        <TextBlock
+                                            FontWeight="Bold"
+                                            Style="{StaticResource SubHeadingStyle}"
+                                            Text="Venue: " />
+                                        <TextBlock
+                                            x:Name="VenueField"
+                                            Style="{StaticResource EventInfoStyle}"
+                                            Text="{Binding Venue}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+
+                                    <!--  Category  -->
+                                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                        <TextBlock
+                                            FontWeight="Bold"
+                                            Style="{StaticResource SubHeadingStyle}"
+                                            Text="Category: " />
+                                        <TextBlock
+                                            x:Name="CategoryField"
+                                            Style="{StaticResource EventInfoStyle}"
+                                            Text="{Binding Category}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+
+                                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                        <TextBlock
+                                            FontWeight="Bold"
+                                            Style="{StaticResource SubHeadingStyle}"
+                                            Text="Distance: " />
+                                        <TextBlock
+                                            x:Name="DistanceField"
+                                            Style="{StaticResource EventInfoStyle}"
+                                            Text="{Binding DistanceFromUserKm}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </StackPanel>
+                                <!--  Interested Button  -->
+                                <Button
+                                    x:Name="btnInterested"
+                                    Grid.Row="1"
+                                    Width="130"
+                                    Margin="10"
+                                    Padding="5,2"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Bottom"
+                                    ui:ControlHelper.CornerRadius="4"
+                                    Background="#34c759"
+                                    BorderBrush="#097a48"
+                                    BorderThickness="0.5"
+                                    Click="ButtonInterested_Click"
+                                    CommandParameter="{Binding}"
+                                    Content="I'm Interested"
+                                    FontWeight="SemiBold"
+                                    Foreground="Black"
+                                    IsEnabled="{Binding InterestedButtonEnabled}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+
+
+
+    </Grid>
+</Window>
